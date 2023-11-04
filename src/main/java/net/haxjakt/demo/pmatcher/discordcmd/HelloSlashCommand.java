@@ -8,6 +8,6 @@ public class HelloSlashCommand extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals("hello")) return;
 
-        event.reply("Hello. SpartanBot@v0.0.1").queue();
+        event.reply("Hello. SpartanBot@v0.0.2").queue();
     }
 }

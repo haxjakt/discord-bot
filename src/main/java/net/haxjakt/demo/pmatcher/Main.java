@@ -2,6 +2,7 @@ package net.haxjakt.demo.pmatcher;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -29,9 +30,20 @@ public class Main {
     private static void setUpSlashCommand(final JDA jda) {
         sLogger.info("Adding slash-commands for guild");
         jda.updateCommands().addCommands(
-                Commands.slash("format", "Formateaza raportul de lupta")
-                        .addOption(OptionType.STRING, "raport", "Textul raportului copiat din joc", true),
                 Commands.slash("hello", "Comanda basic")
+        ).queue();
+        try {
+            jda.awaitReady().getGuilds().forEach(guild -> System.out.println(guild.getName()));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        Guild test = jda.getGuilds().stream().filter(guild -> guild.getName().equals("Test Server For JDA Bot")).findFirst().orElse(null);
+        if (test == null) return;
+
+        test.updateCommands().addCommands(
+                Commands.slash("format", "Formateaza raportul de lupta")
+                        .addOption(OptionType.STRING, "raport", "Textul raportului copiat din joc", true)
         ).queue();
     }
 }
