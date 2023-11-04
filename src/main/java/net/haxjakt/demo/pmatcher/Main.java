@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.haxjakt.demo.pmatcher.discordcmd.CombatFormat;
+import net.haxjakt.demo.pmatcher.discordcmd.HelloSlashCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +24,14 @@ public class Main {
 
         setUpSlashCommand(jda);
         jda.addEventListener(new CombatFormat());
+        jda.addEventListener(new HelloSlashCommand());
     }
     private static void setUpSlashCommand(final JDA jda) {
         sLogger.info("Adding slash-commands for guild");
         jda.updateCommands().addCommands(
                 Commands.slash("format", "Formateaza raportul de lupta")
-                        .addOption(OptionType.STRING, "raport", "Textul raportului copiat din joc", true)
+                        .addOption(OptionType.STRING, "raport", "Textul raportului copiat din joc", true),
+                Commands.slash("hello", "Comanda basic")
         ).queue();
     }
 }
