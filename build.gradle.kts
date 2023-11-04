@@ -5,8 +5,19 @@ plugins {
 group = "net.haxjakt.demo.pmatcher"
 version = "1.0-SNAPSHOT"
 
+val mainClassName = "net.haxjakt.demo.pmatcher.Main"
+
 repositories {
     mavenCentral()
+}
+
+tasks.jar {
+    archiveFileName.set("discord-bot.jar")
+    archiveVersion.set("0.0.1")
+}
+
+artifacts {
+    archives(tasks.jar)
 }
 
 dependencies {
