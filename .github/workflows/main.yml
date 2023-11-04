@@ -34,4 +34,4 @@ jobs:
          name: build-artifacts
      - name: List Artifacts
        run: |
-         ls -R build-artifacts
+         ls -R .
