@@ -62,3 +62,6 @@ jobs:
           password: ${{ secrets.DISCORD_BOT_PASS }}
           script: |
             echo ${{ secrets.DISCORD_BOT_SECRET_V1 }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin
+            docker pull ghcr.io/${{ github.repository }}:latest
+            docker stop discord-bot || true && docker rm discord-bot || true
+            docker run -d --name discord-bot ghcr.io/${{ github.repository }}:latest ${{ secrets.MAIN_TOKEN }}
