@@ -32,16 +32,12 @@ jobs:
        uses: actions/download-artifact@v2
        with:
          name: build-artifacts
-#     - name: Login into docker
-#       uses: docker/login-action@v3
-#       with:
-#         registry: ghcr.io
-#         username: ${{ github.actor }}
-#         password: ${{ secrets.GITHUB_TOKEN }}
-     - name: Test secrets
-       run: |
-         echo ${{ github.actor }}
-         echo ${{ secrets.TEST }}
+     - name: Login into docker
+       uses: docker/login-action@v3
+       with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.DISCORD_BOT_SECRET_V1 }}
      - name: List Artifacts
        run: |
          ls -R .
