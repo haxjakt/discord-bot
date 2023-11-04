@@ -54,5 +54,12 @@ jobs:
     needs: package
     steps:
       - name: Test step
-        run: |
-          which ssh
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DISCORD_BOT_HOST }}
+          port: ${{ secrets.DISCORD_BOT_PORT }}
+          username: ${{ secrets.DISCORD_BOT_USER }}
+          password: ${{ secrets.DISCORD_BOT_PASS }}
+          script: |
+            whoami
+            ifconfig
