@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id("java")
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "net.haxjakt.demo.pmatcher"
@@ -11,15 +14,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.jar {
-    archiveFileName.set("discord-bot.jar")
-    archiveVersion.set("0.0.1")
-}
-
-artifacts {
-    archives(tasks.jar)
-}
-
 dependencies {
     implementation("net.dv8tion:JDA:5.0.0-beta.16")
     implementation("ch.qos.logback:logback-classic:1.2.9")
@@ -29,4 +23,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<ShadowJar> {
+    archiveFileName.set("discord-bot-fat.jar")
+    archiveVersion.set("0.0.1")
+    manifest {
+        attributes["Main-Class"] = "net.haxjakt.demo.pmatcher.Main"
+    }
 }
