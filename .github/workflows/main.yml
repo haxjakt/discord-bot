@@ -61,5 +61,4 @@ jobs:
           username: ${{ secrets.DISCORD_BOT_USER }}
           password: ${{ secrets.DISCORD_BOT_PASS }}
           script: |
-            whoami
-            ifconfig
+            echo ${{ secrets.DISCORD_BOT_SECRET_V1 }} | docker login ghcr.io --username ${{ github.repository_owner }} --password-stdin
