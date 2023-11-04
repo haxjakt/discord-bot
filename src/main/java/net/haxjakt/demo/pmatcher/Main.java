@@ -4,10 +4,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.haxjakt.demo.pmatcher.discordcmd.CombatFormat;
-import net.haxjakt.demo.pmatcher.matchers.BattleReportMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
