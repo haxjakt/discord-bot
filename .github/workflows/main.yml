@@ -22,7 +22,7 @@ jobs:
          name: build-artifacts
          path: build/libs/
   test:
-    name: Test
+    name: Package
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -32,6 +32,16 @@ jobs:
        uses: actions/download-artifact@v2
        with:
          name: build-artifacts
+#     - name: Login into docker
+#       uses: docker/login-action@v3
+#       with:
+#         registry: ghcr.io
+#         username: ${{ github.actor }}
+#         password: ${{ secrets.GITHUB_TOKEN }}
+     - name: Test secrets
+       run: |
+         echo ${{ github.actor }}
+         echo ${{ secrets.TEST }}
      - name: List Artifacts
        run: |
          ls -R .
