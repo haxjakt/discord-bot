@@ -52,7 +52,7 @@ jobs:
 #          tags: ghcr.io/${{ github.repository }}:latest
      - name: Tag docker image
        run: |
-         docker tag discord-bot ghcr.op/${{ github.repository }}:latest
+         docker tag discord-bot ghcr.io/${{ github.repository }}:latest
      - name: Push docker image
        run: |
          docker push ghcr.io/${{ github.repository }}:latest
