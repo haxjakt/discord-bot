@@ -46,7 +46,7 @@ jobs:
        uses: docker/build-push-action@v2
        with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ env.TAG }}
+          tags: ghcr.io/${{ github.repository }}:latest
 #     - name: Tag docker image
 #       run: |
 #         docker tag discord-bot ghcr.op/${{ github.repository_owner }}/discord-bot:latest
