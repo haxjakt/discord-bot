@@ -14,6 +14,7 @@ public class Main {
 
     private static final Logger sLogger = LoggerFactory.getLogger(Main.class);
     public static void main(String[] args) {
+        System.out.println("=== DISCORD BOT MAIN ===");
         if (args.length < 1) return;
         JDA jda = JDABuilder.createDefault(args[0],
                 GatewayIntent.GUILD_MESSAGES,
