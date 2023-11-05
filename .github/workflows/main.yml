@@ -48,6 +48,10 @@ jobs:
      - name: Push docker image
        run: |
          docker push ghcr.io/${{ github.repository }}:latest
+     - name: Archive docker image artifact
+       uses: ishworkh/docker-image-artifact-upload@v2.0.1
+       with:
+           image: ghcr.io/${{ github.repository }}:latest
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
