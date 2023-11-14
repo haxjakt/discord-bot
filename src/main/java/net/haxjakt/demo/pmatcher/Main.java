@@ -32,7 +32,12 @@ public class Main {
     private static void setUpSlashCommand(final JDA jda) {
         sLogger.info("Adding slash-commands for guild");
         jda.updateCommands().addCommands(
-                Commands.slash("hello", "Comanda basic")
+                Commands.slash("hello", "Comanda basic"),
+                Commands.slash("time", "Calculeaza timpul necesar pentru a transporta trupe")
+                        .addOption(OptionType.STRING, "coord1", "Coordonatele primei locatii", true)
+                        .addOption(OptionType.STRING, "coord2", "Coordonatele celei de-a 2-a locatii", true)
+                        .addOption(OptionType.STRING, "troops", "Tipul de unitate", true)
+                        .addOption(OptionType.INTEGER, "port", "Nivelul combinat al portului", false)
         ).queue();
 
         Guild test = jda.getGuilds().stream().filter(guild -> guild.getName().equals("Test Server For JDA Bot")).findFirst().orElse(null);
@@ -40,12 +45,7 @@ public class Main {
 
         test.updateCommands().addCommands(
                 Commands.slash("format", "Formateaza raportul de lupta")
-                        .addOption(OptionType.STRING, "raport", "Textul raportului copiat din joc", true),
-                Commands.slash("time", "Calculeaza timpul necesar pentru a transporta trupe")
-                        .addOption(OptionType.STRING, "coord1", "Coordonatele primei locatii", true)
-                        .addOption(OptionType.STRING, "coord2", "Coordonatele celei de-a 2-a locatii", true)
-                        .addOption(OptionType.STRING, "troops", "Tipul de unitate", true)
-                        .addOption(OptionType.INTEGER, "port", "Nivelul combinat al portului", false)
+                        .addOption(OptionType.STRING, "raport", "Textul raportului copiat din joc", true)
         ).queue();
     }
 }
