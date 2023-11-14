@@ -123,7 +123,7 @@ public class TravelTimeCommand extends ListenerAdapter {
             } else if (in.isHarborSpecific()) {
                 StringBuilder sb = new StringBuilder();
 
-                int loadingTime = (int) Math.ceil(in.troopWeight / in.harbourLoadingSpeed);
+                int loadingTime = (int) Math.floor(in.troopWeight / in.harbourLoadingSpeed);
                 sb.append("Timpul de incarcare in port: ").append(secondsToDisplay(loadingTime));
 
                 int travelTime = (int) Math.ceil(getTravelTimeOnSea(in.x[0], in.y[0], in.x[1], in.y[1]));
