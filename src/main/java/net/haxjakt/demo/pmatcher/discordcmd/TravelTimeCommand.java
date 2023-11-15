@@ -1,17 +1,13 @@
 package net.haxjakt.demo.pmatcher.discordcmd;
 
-import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 
@@ -62,6 +58,7 @@ public class TravelTimeCommand extends ListenerAdapter {
             entry("spartan", 60)
     );
 
+    @SuppressWarnings("unused")
     public static String[] getTroopNames() {
         return TROOP_WEIGHT.keySet().toArray(new String[0]);
     }
@@ -147,18 +144,6 @@ public class TravelTimeCommand extends ListenerAdapter {
                 throw new TravelTimeException("Botul inca nu suporta un nivel atat de mare la port: " + level);
             }
             harbourLoadingSpeed = (double) HARBOUR_LOADING_SPEED.get(level) / 60;
-        }
-    }
-
-    @Override
-    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
-        if (event.getName().equals(COMMAND_NAME) && event.getFocusedOption().getName().equals("troops")) {
-            sLogger.info("Received auto-complete event: " + event.getFocusedOption().getValue());
-            List<Command.Choice> options = Stream.of(getTroopNames())
-                    .filter(name -> name.startsWith(event.getFocusedOption().getValue()))
-                    .map(name -> new Command.Choice(name, name))
-                    .collect(Collectors.toList());
-            event.replyChoices(options).queue();
         }
     }
 
