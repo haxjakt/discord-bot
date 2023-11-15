@@ -1,13 +1,17 @@
 package net.haxjakt.demo.pmatcher.discordcmd;
 
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 
@@ -40,6 +44,28 @@ public class TravelTimeCommand extends ListenerAdapter {
             entry("spartan", 5)
     );
 
+    private static final Map<String, Integer> TROOP_SPEED = Map.ofEntries(
+            entry("slinger", 60),
+            entry("archer", 60),
+            entry("carabineer", 60),
+            entry("spearman", 60),
+            entry("swordman", 60),
+            entry("hoplite", 60),
+            entry("giant", 40),
+            entry("gyro", 80),
+            entry("balloon", 20),
+            entry("ram", 40),
+            entry("catapult", 40),
+            entry("mortar", 40),
+            entry("doctor", 60),
+            entry("cook", 40),
+            entry("spartan", 60)
+    );
+
+    public static String[] getTroopNames() {
+        return TROOP_WEIGHT.keySet().toArray(new String[0]);
+    }
+
     private static class TravelTimeException extends RuntimeException {
         TravelTimeException(String cause) {
             super(cause);
@@ -49,12 +75,14 @@ public class TravelTimeCommand extends ListenerAdapter {
         int[] x = new int[2];
         int[] y = new int[2];
         Integer troopWeight;
+        Integer troopSpeed;
         Double harbourLoadingSpeed;
 
         InputData(final String c1, final String c2, final String t, final String h) {
             convertCoords(c1, 0);
             convertCoords(c2, 1);
             resolveTroopWeight(t);
+            resolveTroopSpeed(t);
             resolveHarbourLoadingSpeed(h);
         }
 
@@ -72,6 +100,10 @@ public class TravelTimeCommand extends ListenerAdapter {
         }
 
         private void convertCoords(final String coordString, int what) {
+            if (coordString.isEmpty()) {
+                x[what] = y[what] = 0;
+                return;
+            }
             int separator = coordString.indexOf(':');
             if (separator == -1) {
                 throw new TravelTimeException("Coordonatele nu sunt scrise bine");
@@ -93,6 +125,18 @@ public class TravelTimeCommand extends ListenerAdapter {
             }
             troopWeight = troopCount * TROOP_WEIGHT.get(troopName);
         }
+
+        private void resolveTroopSpeed(String troop) {
+            int separator = troop.indexOf(':');
+            if (separator != -1) {
+                troop = troop.substring(0, separator);
+            }
+            if (!TROOP_SPEED.containsKey(troop)) {
+                // TODO maybe create some more SELF EXPLAINATORY exceptions
+                throw new TravelTimeException("Nu s-a gasit unitatea " + troop + " in lista de unitati cunoscute");
+            }
+            troopSpeed = TROOP_SPEED.get(troop);
+        }
         private void resolveHarbourLoadingSpeed(final String harborLevel) {
             if (harborLevel.isEmpty()) {
                 harbourLoadingSpeed = null;
@@ -105,6 +149,19 @@ public class TravelTimeCommand extends ListenerAdapter {
             harbourLoadingSpeed = (double) HARBOUR_LOADING_SPEED.get(level) / 60;
         }
     }
+
+    @Override
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+        if (event.getName().equals(COMMAND_NAME) && event.getFocusedOption().getName().equals("troops")) {
+            sLogger.info("Received auto-complete event: " + event.getFocusedOption().getValue());
+            List<Command.Choice> options = Stream.of(getTroopNames())
+                    .filter(name -> name.startsWith(event.getFocusedOption().getValue()))
+                    .map(name -> new Command.Choice(name, name))
+                    .collect(Collectors.toList());
+            event.replyChoices(options).queue();
+        }
+    }
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         // time X1:Y1 X2:Y2 troop[:amount] [harbour-level]
@@ -119,7 +176,8 @@ public class TravelTimeCommand extends ListenerAdapter {
             InputData in = new InputData(coord1, coord2, troops, harbor);
             sLogger.info(in.toString());
             if (in.isSameIsland()) {
-                event.reply("Aceeasi insula").queue();
+                int travelTime = (int)Math.ceil(((double) 72_000 / in.troopSpeed) * getDistance(in.x[0], in.y[0], in.x[1], in.y[1]));
+                event.reply("Timpul de deplasare pe insula este: " + secondsToDisplay(travelTime)).queue();
             } else if (in.isHarborSpecific()) {
                 StringBuilder sb = new StringBuilder();
 

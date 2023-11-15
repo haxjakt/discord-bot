@@ -34,11 +34,12 @@ public class Main {
         jda.updateCommands().addCommands(
                 Commands.slash("hello", "Comanda basic"),
                 Commands.slash("time", "Calculeaza timpul necesar pentru a transporta trupe")
-                        .addOption(OptionType.STRING, "coord1", "Coordonatele primei locatii", true)
-                        .addOption(OptionType.STRING, "coord2", "Coordonatele celei de-a 2-a locatii", true)
-                        .addOption(OptionType.STRING, "troops", "Tipul de unitate", true)
+                        .addOption(OptionType.STRING, "troops", "Tipul de unitate", true, true)
+                        .addOption(OptionType.STRING, "coord1", "Coordonatele primei locatii", false)
+                        .addOption(OptionType.STRING, "coord2", "Coordonatele celei de-a 2-a locatii", false)
                         .addOption(OptionType.INTEGER, "port", "Nivelul combinat al portului", false)
         ).queue();
+        sLogger.info("Added slash commands for guild");
 
         Guild test = jda.getGuilds().stream().filter(guild -> guild.getName().equals("Test Server For JDA Bot")).findFirst().orElse(null);
         if (test == null) return;
