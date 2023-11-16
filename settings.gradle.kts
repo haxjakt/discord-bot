@@ -1,2 +1,2 @@
-rootProject.name = "PatternMatcherDemo"
+rootProject.name = "DiscordBot"
 

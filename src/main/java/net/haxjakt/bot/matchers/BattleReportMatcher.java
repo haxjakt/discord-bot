@@ -1,6 +1,6 @@
-package net.haxjakt.demo.pmatcher.matchers;
+package net.haxjakt.bot.matchers;
 
-import net.haxjakt.demo.pmatcher.coreutls.CoreObject;
+import net.haxjakt.bot.coreutls.CoreObject;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

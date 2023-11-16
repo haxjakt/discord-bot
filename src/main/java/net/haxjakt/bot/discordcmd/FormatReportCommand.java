@@ -1,4 +1,4 @@
-package net.haxjakt.demo.pmatcher.discordcmd;
+package net.haxjakt.bot.discordcmd;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public class CombatFormat extends ListenerAdapter {
+public class FormatReportCommand extends ListenerAdapter {
 
     private static final String COMMAND_NAME = "format";
-    private static final Logger sLogger = LoggerFactory.getLogger(CombatFormat.class);
+    private static final Logger sLogger = LoggerFactory.getLogger(FormatReportCommand.class);
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.getName().equals(COMMAND_NAME)) return;
@@ -27,7 +27,8 @@ public class CombatFormat extends ListenerAdapter {
                                 012345678912345    012345678912345
                                 [12345]        -vs-        [12345]
                                 012345678912345    012345678912345
-                                ==================================
+                                ```
+                                ```
                                 0(-7)..........zid...............x
                                 x.............gigant........18(-0)
                                 x.............berbec.........9(-0)

@@ -1,4 +1,4 @@
-package net.haxjakt.demo.pmatcher.discordcmd;
+package net.haxjakt.bot.discordcmd;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -14,6 +14,7 @@ import static java.util.Map.entry;
 public class TravelTimeCommand extends ListenerAdapter {
 
     private static final String COMMAND_NAME = "time";
+    private static final String COMMAND_DESCRIPTION = "Calculeaza timpul de transport pentru unitati si nave";
     private static final Logger sLogger = LoggerFactory.getLogger(TravelTimeCommand.class);
 
     /**
@@ -21,6 +22,7 @@ public class TravelTimeCommand extends ListenerAdapter {
      */
     private static final List<Integer> HARBOUR_LOADING_SPEED = List.of(10, 30, 60, 93, 129, 169, 213, 261, 315, 373,
             437, 508, 586, 672, 766, 869, 983, 1108, 1246, 1398, 1565, 1748, 1950, 2172, 2416, 2685, 2980, 3305, 3663);
+
 
     private static final Map<String, Integer> TROOP_WEIGHT = Map.ofEntries(
             entry("slinger", 3),
@@ -58,6 +60,20 @@ public class TravelTimeCommand extends ListenerAdapter {
             entry("spartan", 60)
     );
 
+    private static final Map<String, Integer> BATTLESHIP_SPEED = Map.ofEntries(
+            entry("ram-ship", 40),
+            entry("ballista", 40),
+            entry("fireship", 40),
+            entry("catapult-ship", 40),
+            entry("mortar-ship", 30),
+            entry("steamram", 40),
+            entry("rocket", 30),
+            entry("diving", 40),
+            entry("paddle", 60),
+            entry("carrier", 20),
+            entry("tender", 30)
+    );
+
     @SuppressWarnings("unused")
     public static String[] getTroopNames() {
         return TROOP_WEIGHT.keySet().toArray(new String[0]);
@@ -74,6 +90,7 @@ public class TravelTimeCommand extends ListenerAdapter {
         Integer troopWeight;
         Integer troopSpeed;
         Double harbourLoadingSpeed;
+        boolean isBattleship;
 
         InputData(final String c1, final String c2, final String t, final String h) {
             convertCoords(c1, 0);
@@ -90,6 +107,8 @@ public class TravelTimeCommand extends ListenerAdapter {
         public boolean isSameIsland() {
             return x[0] == x[1] && y[0] == y[1];
         }
+
+        public boolean isBattleship() { return isBattleship; }
 
         @Override
         public String toString() {
@@ -115,9 +134,12 @@ public class TravelTimeCommand extends ListenerAdapter {
                 return;
             }
             String troopName = troop.substring(0, separator);
+            if (BATTLESHIP_SPEED.containsKey(troopName)) {
+                troopWeight = null;
+                return;
+            }
             int troopCount = Integer.parseInt(troop.substring(separator + 1));
             if (!TROOP_WEIGHT.containsKey(troopName)) {
-                // TODO maybe create some more SELF EXPLAINATORY exceptions
                 throw new TravelTimeException("Nu s-a gasit unitatea " + troopName + " in lista de unitati cunoscute");
             }
             troopWeight = troopCount * TROOP_WEIGHT.get(troopName);
@@ -128,11 +150,19 @@ public class TravelTimeCommand extends ListenerAdapter {
             if (separator != -1) {
                 troop = troop.substring(0, separator);
             }
-            if (!TROOP_SPEED.containsKey(troop)) {
-                // TODO maybe create some more SELF EXPLAINATORY exceptions
-                throw new TravelTimeException("Nu s-a gasit unitatea " + troop + " in lista de unitati cunoscute");
+            if (TROOP_SPEED.containsKey(troop)) {
+                troopSpeed = TROOP_SPEED.get(troop);
+                isBattleship = false;
+                return;
             }
-            troopSpeed = TROOP_SPEED.get(troop);
+            if (BATTLESHIP_SPEED.containsKey(troop)) {
+                troopSpeed = TROOP_SPEED.get(troop);
+                isBattleship = true;
+                return;
+            }
+            // TODO maybe create some more SELF EXPLAINATORY exceptions
+            throw new TravelTimeException("Nu s-a gasit unitatea " + troop + " in lista de unitati cunoscute");
+
         }
         private void resolveHarbourLoadingSpeed(final String harborLevel) {
             if (harborLevel.isEmpty()) {
@@ -160,9 +190,9 @@ public class TravelTimeCommand extends ListenerAdapter {
         try {
             InputData in = new InputData(coord1, coord2, troops, harbor);
             sLogger.info(in.toString());
-            if (in.isSameIsland()) {
+            if (in.isSameIsland() || in.isBattleship()) {
                 int travelTime = (int)Math.ceil(((double) 72_000 / in.troopSpeed) * getDistance(in.x[0], in.y[0], in.x[1], in.y[1]));
-                event.reply("Timpul de deplasare pe insula este: " + secondsToDisplay(travelTime)).queue();
+                event.reply("Timpul de deplasare este: " + secondsToDisplay(travelTime)).queue();
             } else if (in.isHarborSpecific()) {
                 StringBuilder sb = new StringBuilder();
 
@@ -177,7 +207,7 @@ public class TravelTimeCommand extends ListenerAdapter {
                 event.reply(sb.toString()).queue();
             } else {
                 int travelTime = (int) Math.ceil(getTravelTimeOnSea(in.x[0], in.y[0], in.x[1], in.y[1]));
-                event.reply("Timpul total: " + secondsToDisplay(travelTime)).queue();
+                event.reply("Timpul de deplasate este: " + secondsToDisplay(travelTime)).queue();
             }
         } catch (NumberFormatException nfe) {
             event.reply("Unul din numere este scris gresit (cred)").queue();

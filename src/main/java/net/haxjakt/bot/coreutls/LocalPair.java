@@ -1,4 +1,4 @@
-package net.haxjakt.demo.pmatcher.coreutls;
+package net.haxjakt.bot.coreutls;
 
 public class LocalPair {
     private final String firstItem;

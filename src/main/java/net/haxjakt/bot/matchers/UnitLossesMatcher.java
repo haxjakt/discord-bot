@@ -1,7 +1,7 @@
-package net.haxjakt.demo.pmatcher.matchers;
+package net.haxjakt.bot.matchers;
 
-import net.haxjakt.demo.pmatcher.coreutls.CoreObject;
-import net.haxjakt.demo.pmatcher.coreutls.LocalPair;
+import net.haxjakt.bot.coreutls.CoreObject;
+import net.haxjakt.bot.coreutls.LocalPair;
 
 import java.io.BufferedReader;
 import java.io.IOException;

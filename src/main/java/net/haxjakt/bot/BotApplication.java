@@ -1,4 +1,4 @@
-package net.haxjakt.demo.pmatcher;
+package net.haxjakt.bot;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -6,16 +6,16 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.haxjakt.demo.pmatcher.discordcmd.CombatFormat;
-import net.haxjakt.demo.pmatcher.discordcmd.HelloSlashCommand;
-import net.haxjakt.demo.pmatcher.discordcmd.TravelTimeCommand;
+import net.haxjakt.bot.discordcmd.FormatReportCommand;
+import net.haxjakt.bot.discordcmd.HelloSlashCommand;
+import net.haxjakt.bot.discordcmd.TravelTimeCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class Main {
+public class BotApplication {
 
-    private static final Logger sLogger = LoggerFactory.getLogger(Main.class);
+    private static final Logger sLogger = LoggerFactory.getLogger(BotApplication.class);
     public static void main(String[] args) {
         System.out.println("=== DISCORD BOT MAIN ===");
         if (args.length < 1) return;
@@ -25,7 +25,7 @@ public class Main {
                 GatewayIntent.GUILD_MEMBERS).build();
 
         setUpSlashCommand(jda);
-        jda.addEventListener(new CombatFormat());
+        jda.addEventListener(new FormatReportCommand());
         jda.addEventListener(new HelloSlashCommand());
         jda.addEventListener(new TravelTimeCommand());
     }

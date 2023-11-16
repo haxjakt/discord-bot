@@ -29,6 +29,6 @@ tasks.withType<ShadowJar> {
     archiveFileName.set("discord-bot-fat.jar")
     archiveVersion.set("0.0.1")
     manifest {
-        attributes["Main-Class"] = "net.haxjakt.demo.pmatcher.Main"
+        attributes["Main-Class"] = "net.haxjakt.bot.BotApplication"
     }
 }
