@@ -146,6 +146,7 @@ public class TravelTimeCommand extends ListenerAdapter {
         }
 
         private void resolveTroopSpeed(String troop) {
+            sLogger.info("Resolving troop speed for: " + troop);
             int separator = troop.indexOf(':');
             if (separator != -1) {
                 troop = troop.substring(0, separator);
@@ -156,7 +157,7 @@ public class TravelTimeCommand extends ListenerAdapter {
                 return;
             }
             if (BATTLESHIP_SPEED.containsKey(troop)) {
-                troopSpeed = TROOP_SPEED.get(troop);
+                troopSpeed = BATTLESHIP_SPEED.get(troop);
                 isBattleship = true;
                 return;
             }
