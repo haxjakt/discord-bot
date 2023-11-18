@@ -2,7 +2,9 @@ package net.haxjakt.bot.discordcmd;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.haxjakt.bot.annotations.JDAListener;
 
+@JDAListener
 public class HelloSlashCommand extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {

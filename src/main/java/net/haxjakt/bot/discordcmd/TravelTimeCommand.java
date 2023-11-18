@@ -3,6 +3,7 @@ package net.haxjakt.bot.discordcmd;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.haxjakt.bot.annotations.JDAListener;
 import net.haxjakt.bot.game.HarbourData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+@JDAListener
 public class TravelTimeCommand extends ListenerAdapter {
 
     private static final String COMMAND_NAME = "time";
