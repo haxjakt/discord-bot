@@ -1,5 +1,12 @@
 package net.haxjakt.bot.game;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.haxjakt.bot.coreutls.CoreObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -10,11 +17,40 @@ import java.util.List;
  *
  * TODO extract the data into external file (JSON perhaps)
  */
-public class HarbourData {
+public class HarbourData extends CoreObject {
 
-    private static final List<Integer> HARBOUR_LOADING_SPEED = List.of(10, 30, 60, 93, 129, 169, 213, 261, 315, 373,
-            437, 508, 586, 672, 766, 869, 983, 1108, 1246, 1398, 1565, 1748, 1950, 2172, 2416, 2685, 2980, 3305, 3663);
+    private static HarbourData INSTANCE;
+    private static final Logger sLogger = LoggerFactory.getLogger(HarbourData.class);
 
-    public static int getLoadingSpeed(int level) { return 0; }
+    private List<Integer> mHarbourLoadingSpeed;
+
+    private HarbourData() {
+        try (InputStream in = getClassLoader().getResourceAsStream("gamedata/harbour.json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            mHarbourLoadingSpeed = mapper.readValue(in, new TypeReference<List<Integer>>() {});
+            sLogger.info("Read harbour data: " + mHarbourLoadingSpeed);
+        } catch (Exception e) {
+            sLogger.error("Caught error {" + e.getClass() + "} while trying to read harbour properties");
+        }
+    }
+
+    public static HarbourData getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new HarbourData();
+        }
+        return INSTANCE;
+    }
+
+    public int getAvailableLevels() {
+        return mHarbourLoadingSpeed.size();
+    }
+
+    public int getLoadingSpeed(int level) {
+        return mHarbourLoadingSpeed.get(level);
+    }
+
+    public int getLoadingSpeed(int levelHarbour1, int levelHarbour2) {
+        return mHarbourLoadingSpeed.get(levelHarbour1) + mHarbourLoadingSpeed.get(levelHarbour2);
+    }
 
 }

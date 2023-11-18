@@ -3,6 +3,7 @@ package net.haxjakt.bot.discordcmd;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.haxjakt.bot.game.HarbourData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,15 +15,7 @@ import static java.util.Map.entry;
 public class TravelTimeCommand extends ListenerAdapter {
 
     private static final String COMMAND_NAME = "time";
-    private static final String COMMAND_DESCRIPTION = "Calculeaza timpul de transport pentru unitati si nave";
     private static final Logger sLogger = LoggerFactory.getLogger(TravelTimeCommand.class);
-
-    /**
-     *  Harbour has a certain speed at which it loads cargo onto cargo ships
-     */
-    private static final List<Integer> HARBOUR_LOADING_SPEED = List.of(10, 30, 60, 93, 129, 169, 213, 261, 315, 373,
-            437, 508, 586, 672, 766, 869, 983, 1108, 1246, 1398, 1565, 1748, 1950, 2172, 2416, 2685, 2980, 3305, 3663);
-
 
     private static final Map<String, Integer> TROOP_WEIGHT = Map.ofEntries(
             entry("slinger", 3),
@@ -171,10 +164,12 @@ public class TravelTimeCommand extends ListenerAdapter {
                 return;
             }
             int level = Integer.parseInt(harborLevel);
-            if (level > HARBOUR_LOADING_SPEED.size()) {
+            HarbourData harbourData = HarbourData.getInstance();
+            if (level > harbourData.getAvailableLevels()) {
                 throw new TravelTimeException("Botul inca nu suporta un nivel atat de mare la port: " + level);
             }
-            harbourLoadingSpeed = (double) HARBOUR_LOADING_SPEED.get(level) / 60;
+            double loadingPerMinute = harbourData.getLoadingSpeed(level);
+            harbourLoadingSpeed = loadingPerMinute / 60;
         }
     }
 
