@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - master
+      - development
+  pull_request:
+    types:
+      - closed
+    branches:
+      - master
 
 jobs:
   build:
@@ -27,6 +33,7 @@ jobs:
   package:
     name: Package
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     needs: build
     steps:
      - name: Checkout code
