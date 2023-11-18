@@ -30,6 +30,7 @@ public class BotApplication {
         String discordToken = args[0];
 
         initJDA(discordToken);
+//        updateSlashCommands(); -- experimental
         setUpSlashCommand();
         registerListeners();
     }
