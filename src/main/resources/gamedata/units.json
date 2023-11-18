@@ -1,0 +1,10 @@
+{
+  "slinger": {
+    "weight": 3,
+    "speed": 60
+  },
+  "archer": {
+    "weight": 5,
+    "speed": 60
+  }
+}
