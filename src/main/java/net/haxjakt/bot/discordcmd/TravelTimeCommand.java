@@ -8,12 +8,12 @@ import net.haxjakt.bot.game.HarbourData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
 
 @JDAListener
+@SuppressWarnings("unused")
 public class TravelTimeCommand extends ListenerAdapter {
 
     private static final String COMMAND_NAME = "time";
@@ -82,7 +82,7 @@ public class TravelTimeCommand extends ListenerAdapter {
     private static class InputData {
         int[] x = new int[2];
         int[] y = new int[2];
-        Integer troopWeight;
+        Integer troopWeight = 0;
         Integer troopSpeed;
         Double harbourLoadingSpeed;
         boolean isBattleship;
@@ -90,9 +90,10 @@ public class TravelTimeCommand extends ListenerAdapter {
         InputData(final String c1, final String c2, final String t, final String h) {
             convertCoords(c1, 0);
             convertCoords(c2, 1);
-            resolveTroopWeight(t);
-            resolveTroopSpeed(t);
+            resolveTroopWeightMulti(t);
+            resolveTroopSpeedMulti(t);
             resolveHarbourLoadingSpeed(h);
+            sLogger.info("weight: " + troopWeight + ", speed: " + troopSpeed + ", loading: " + harbourLoadingSpeed);
         }
 
         public boolean isHarborSpecific() {
@@ -122,22 +123,47 @@ public class TravelTimeCommand extends ListenerAdapter {
             x[what] = Integer.parseInt(coordString.substring(0, separator));
             y[what] = Integer.parseInt(coordString.substring(separator + 1));
         }
+
+        private void resolveTroopWeightMulti(final String troop) {
+            String[] troops = troop.split("\\s+|,");
+            for (var t : troops) {
+                int test = troopWeight;
+                resolveTroopWeight(t);
+                sLogger.debug("Calcul greutate pentru: " + t + ", computed weight:" + (troopWeight - test));
+            }
+        }
+
         private void resolveTroopWeight(final String troop) {
             int separator = troop.indexOf(':');
             if (separator == -1) {
-                troopWeight = null;
+                // do not modify troop weight - no ammount of troops specified
                 return;
             }
             String troopName = troop.substring(0, separator);
             if (BATTLESHIP_SPEED.containsKey(troopName)) {
-                troopWeight = null;
+                // do not modify troop weight - battleships do not have weight
                 return;
             }
             int troopCount = Integer.parseInt(troop.substring(separator + 1));
             if (!TROOP_WEIGHT.containsKey(troopName)) {
                 throw new TravelTimeException("Nu s-a gasit unitatea " + troopName + " in lista de unitati cunoscute");
             }
-            troopWeight = troopCount * TROOP_WEIGHT.get(troopName);
+            troopWeight += troopCount * TROOP_WEIGHT.get(troopName);
+        }
+
+        private void resolveTroopSpeedMulti(final String troop) {
+            String[] troops = troop.split("\\s+|,");
+            for (var t : troops) {
+                resolveTroopSpeed(t);
+            }
+        }
+
+        private void minTroopSpeed(int speed) {
+            if (troopSpeed == null) {
+                troopSpeed = speed;
+            } else {
+                troopSpeed = Math.min(troopSpeed, speed);
+            }
         }
 
         private void resolveTroopSpeed(String troop) {
@@ -147,12 +173,12 @@ public class TravelTimeCommand extends ListenerAdapter {
                 troop = troop.substring(0, separator);
             }
             if (TROOP_SPEED.containsKey(troop)) {
-                troopSpeed = TROOP_SPEED.get(troop);
+                minTroopSpeed(TROOP_SPEED.get(troop));
                 isBattleship = false;
                 return;
             }
             if (BATTLESHIP_SPEED.containsKey(troop)) {
-                troopSpeed = BATTLESHIP_SPEED.get(troop);
+                minTroopSpeed(BATTLESHIP_SPEED.get(troop));
                 isBattleship = true;
                 return;
             }
